@@ -1,3 +1,8 @@
+import time
+import sys
+
+DEBUG = False
+
 
 def mul(A, B):
     result = []
@@ -111,33 +116,35 @@ def fill(A):
     if len(A) > len(A[0]):
         increment = [0 for _ in range(len(A) - len(A[0]))]
         for r in A:
-            result.append(r + increment)
+            result.append(r + increment[:])
     else:
         result = A[:]
         increment = [0 for _ in range(len(A[0]))]
         for _ in range(len(A[0]) - len(A)):
-            result.append(increment)
+            result.append(increment[:])
 
     return result
 
 
-def enlarge(A):
+def enlarge(A, n=None):
 
     q = 1
-    n = len(A)
+
+    if not n:
+        n = len(A)
 
     while 2**q <= n: q += 1
-    to_complete = 2**q - n
+    to_complete = 2**q - len(A)
 
     if to_complete > 0:
         diff_col = [0 for _ in range(to_complete)]
         complete_row = [0 for _ in range(n + to_complete)]
 
         for i in range(len(A)):
-            A[i] += diff_col
+            A[i] += diff_col[:]
 
         for _ in range(to_complete):
-            A.append(complete_row)
+            A.append(complete_row[:])
     
     return A
 
@@ -152,10 +159,62 @@ def Strassen(A, B, n_min = 2):
 
     if len(B) != len(B[0]):
         B = fill(B)
+
+    max_len = max(len(A), len(B))
+
+    A = enlarge(A, max_len)
+    B = enlarge(B, max_len)
+
+    start = time.time()
+    C = strassen(A, B, n_min=n_min)
+    end = time.time()
+
+    if DEBUG:
+        print('Strassen: ',  end - start)
+   
+    return [r[:j] for r in C[:i]]
+
+
+def test():
+    import numpy as np
+
+    num_max = 50
+
+    n = np.random.random_integers(2, num_max)
+    p = np.random.random_integers(2, num_max)
+    m = np.random.random_integers(2, num_max)
+
+    n1 = np.random.random_integers(0, 9, size=(m, p))
+    n2 = np.random.random_integers(0, 9, size=(p, n))
+
+    m1 = [list(r) for r in n1]
+    m2 = [list(r) for r in n2]
+
+    is_correct = True
+
+    start = time.time()
+    c1 = mul(m1, m2)
+    end = time.time()
+
+    print('Simple algorithm: ' ,end - start)
+
+    c2 = Strassen(m1, m2)
+
+    for i in range(len(c1)):
+        for j in range(len(c1[i])):
+            if c1[i][j] != c2[i][j]: 
+                is_correct = False
+
+    print(is_correct)
+
+if __name__ == '__main__':
+    global DEBUG 
+    is_debug = False
+
+    if len(sys.argv) > 1:
+        is_debug = sys.argv[1]
     
-    return [r[:j] for r in strassen(enlarge(A), enlarge(B), n_min=n_min)[:i]]
+    DEBUG = is_debug
 
-m1 = [[1, 2, 3], [4, 5, 6]]
-m2 = [[1, 2], [3, 4], [5, 6]]
-
-print(Strassen(m1, m2))
+    if is_debug:
+        test()
