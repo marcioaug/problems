@@ -1,12 +1,12 @@
 
 def mul(A, B):
     result = []
-    for i, r in enumerate(A):
+    for i in range(len(A)):
         result.append([])
-        for j in range(len(B[i])):
+        for j in range(len(B[0])):
             result[i].append(0)
-            for k, a in enumerate(r):
-                result[i][j] += (a * B[k][j])    
+            for k in range(len(A[0])):
+                result[i][j] += (A[i][k] * B[k][j])    
     return result
 
 
@@ -104,13 +104,53 @@ def merge(A, B, C, D):
 
     return result
 
-A = [
-    [1, 2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 0, 1, 2],
-    [3, 4, 5, 6]
-]
 
-print(strassen(A, A))
-print(strassen(A, A, n_min=4))
-print(strassen(A, A, n_min=1))
+def fill(A):
+    result = []
+
+    if len(A) > len(A[0]):
+        increment = [0 for _ in range(len(A) - len(A[0]))]
+        for r in A:
+            result.append(r + increment)
+    else:
+        result = A[:]
+        increment = [0 for _ in range(len(A[0]))]
+        for _ in range(len(A[0]) - len(A)):
+            result.append(increment)
+
+    return result
+
+
+def enlarge(A):
+
+    q = 1
+    n = len(A)
+
+    while 2**q <= n: q += 1
+    to_complete = 2**q - n
+
+    if to_complete > 0:
+        diff_col = [0 for _ in range(to_complete)]
+        complete_row = [0 for _ in range(n + to_complete)]
+
+        for i in range(len(A)):
+            A[i] += diff_col
+
+        for _ in range(to_complete):
+            A.append(complete_row)
+    
+    return A
+
+
+def Strassen(A, B, n_min = 2):
+
+    i = len(A)
+    j = len(B[0])
+
+    if len(A) != len(A[0]):
+        A = fill(A)
+
+    if len(B) != len(B[0]):
+        B = fill(B)
+    
+    return [r[:j] for r in strassen(enlarge(A), enlarge(B), n_min=n_min)[:i]]
