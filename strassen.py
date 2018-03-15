@@ -29,7 +29,7 @@ def sub(A, B):
 
 
 def submatrix(A, r, c):
-    return [r[c[0]:c[1]] for r in A[r[0]:r[1]]]
+    return [r[int(c[0]):int(c[1])] for r in A[int(r[0]):int(r[1])]]
 
 
 def strassen(A, B, n_min = 2):
@@ -154,3 +154,8 @@ def Strassen(A, B, n_min = 2):
         B = fill(B)
     
     return [r[:j] for r in strassen(enlarge(A), enlarge(B), n_min=n_min)[:i]]
+
+m1 = [[1, 2, 3], [4, 5, 6]]
+m2 = [[1, 2], [3, 4], [5, 6]]
+
+print(Strassen(m1, m2))
