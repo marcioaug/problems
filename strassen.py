@@ -1,8 +1,6 @@
 import time
 import sys
 
-DEBUG = False
-
 
 def mul(A, B):
     result = []
@@ -161,60 +159,5 @@ def Strassen(A, B, n_min = 2):
         B = fill(B)
 
     max_len = max(len(A), len(B))
-
-    A = enlarge(A, max_len)
-    B = enlarge(B, max_len)
-
-    start = time.time()
-    C = strassen(A, B, n_min=n_min)
-    end = time.time()
-
-    if DEBUG:
-        print('Strassen: ',  end - start)
    
-    return [r[:j] for r in C[:i]]
-
-
-def test():
-    import numpy as np
-
-    num_max = 50
-
-    n = np.random.random_integers(2, num_max)
-    p = np.random.random_integers(2, num_max)
-    m = np.random.random_integers(2, num_max)
-
-    n1 = np.random.random_integers(0, 9, size=(m, p))
-    n2 = np.random.random_integers(0, 9, size=(p, n))
-
-    m1 = [list(r) for r in n1]
-    m2 = [list(r) for r in n2]
-
-    is_correct = True
-
-    start = time.time()
-    c1 = mul(m1, m2)
-    end = time.time()
-
-    print('Simple algorithm: ' ,end - start)
-
-    c2 = Strassen(m1, m2)
-
-    for i in range(len(c1)):
-        for j in range(len(c1[i])):
-            if c1[i][j] != c2[i][j]: 
-                is_correct = False
-
-    print(is_correct)
-
-if __name__ == '__main__':
-    global DEBUG 
-    is_debug = False
-
-    if len(sys.argv) > 1:
-        is_debug = sys.argv[1]
-    
-    DEBUG = is_debug
-
-    if is_debug:
-        test()
+    return [r[:j] for r  in strassen(enlarge(A, max_len), enlarge(B, max_len), n_min=n_min)[:i]]
