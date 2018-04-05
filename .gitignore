@@ -54,3 +54,6 @@ dkms.conf
 env/
 .env/
 .vscode/
+.idea/
+*.iml
+vcs.xml
