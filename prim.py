@@ -52,20 +52,20 @@ def prim_2(graph):
     return MST
 
 
-def prim_3(graph):
-    queue = PriorityQueue()
-    queue.put([0, start])
-
-    while not queue.empty():
-        node = queue.get()
-
-        # if node[0] <= dist[node[1]]:
-        for vertex in graph[node[1]]:
-            if dist[vertex[0]] == None or dist[vertex[0]] > node[0] + vertex[1]:
-                dist[vertex[0]] = node[0] + vertex[1]
-                queue.put([dist[vertex[0]], vertex[0]])
-
-    return dist
+# def prim_3(graph):
+#     queue = PriorityQueue()
+#     queue.put([0, start])
+#
+#     while not queue.empty():
+#         node = queue.get()
+#
+#         # if node[0] <= dist[node[1]]:
+#         for vertex in graph[node[1]]:
+#             if dist[vertex[0]] == None or dist[vertex[0]] > node[0] + vertex[1]:
+#                 dist[vertex[0]] = node[0] + vertex[1]
+#                 queue.put([dist[vertex[0]], vertex[0]])
+#
+#     return dist
 
 
 if __name__ == '__main__':
